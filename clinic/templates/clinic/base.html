@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NurPro Digital Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f6f9; font-size: 13px; }
+        .sidebar { width: 240px; background: #fff; min-height: 100vh; border-right: 1px solid #e2e8f0; position: fixed; top: 0; bottom: 0; left: 0; overflow-y: auto; z-index: 1000; }
+        .sidebar-brand { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; }
+        .sidebar .nav-link { color: #4b5563; padding: 7px 15px; font-weight: 500; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+        .sidebar .nav-link:hover { background-color: #f3f4f6; color: #1d4ed8; }
+        .sidebar .nav-link.active { background-color: #e0f2fe; color: #0284c7; font-weight: 600; }
+        .sidebar-heading { font-size: 11px; text-transform: uppercase; color: #6b7280; font-weight: 700; padding: 12px 15px 4px 15px; letter-spacing: 0.5px; }
+        .main-wrapper { margin-left: 240px; display: flex; flex-direction: column; min-height: 100vh; }
+        .top-navbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 8px 20px; position: sticky; top: 0; z-index: 999; }
+        .content-body { padding: 15px 20px; flex: 1; }
+        .footer { background: #fff; border-top: 1px solid #e2e8f0; padding: 8px 20px; font-size: 12px; color: #6b7280; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-brand d-flex align-items-center justify-content-between">
+        <div>
+            <div class="fw-bold text-primary fs-5" style="line-height: 1;"><i class="bi bi-justify me-1"></i> NurPro</div>
+            <span class="text-muted" style="font-size: 9px; letter-spacing: 1px;">DIGITAL SERVICE</span>
+        </div>
+    </div>
+
+    <ul class="nav flex-column mb-4">
+        <li class="sidebar-heading">БОШ САҲИФА</li>
+        <li><a href="{% url 'dashboard' %}" class="nav-link"><i class="bi bi-bar-chart"></i> Ma'lumotlar Taxtasi</a></li>
+        <li><a href="{% url 'patients_list' %}" class="nav-link active"><i class="bi bi-person-vcard"></i> Qabulxona</a></li>
+
+        <li class="sidebar-heading">БЎЛИМЛАР</li>
+        <li><a href="{% url 'patients_list' %}" class="nav-link"><i class="bi bi-people"></i> Bemorlar</a></li>
+        <li><a href="{% url 'partners' %}" class="nav-link"><i class="bi bi-building"></i> Hamkorlar</a></li>
+
+        <li class="sidebar-heading">ХОДИМЛАР</li>
+        <li><a href="{% url 'doctors_list' %}" class="nav-link"><i class="bi bi-heart-pulse"></i> Shifokorlar</a></li>
+        <li><a href="{% url 'staff' %}" class="nav-link"><i class="bi bi-person-badge"></i> Xodimlar</a></li>
+        <li><a href="{% url 'rooms_list' %}" class="nav-link"><i class="bi bi-box-arrow-in-right"></i> Xonalar</a></li>
+
+        <li class="sidebar-heading">КЛИНИК ХИЗМАТЛАР</li>
+        <li><a href="{% url 'expenses' %}" class="nav-link"><i class="bi bi-cash-stack"></i> Chiqimlar</a></li>
+        <li><a href="{% url 'cards' %}" class="nav-link"><i class="bi bi-credit-card"></i> Kartalar</a></li>
+        <li><a href="{% url 'procedures' %}" class="nav-link"><i class="bi bi-plus-circle"></i> Muolaja xizmatlari</a></li>
+        <li><a href="{% url 'ultrasound' %}" class="nav-link"><i class="bi bi-hospital"></i> UZI</a></li>
+        <li><a href="{% url 'wards' %}" class="nav-link"><i class="bi bi-bed"></i> Palatalar</a></li>
+        <li><a href="{% url 'lab' %}" class="nav-link"><i class="bi bi-funnel"></i> Laboratoriya</a></li>
+
+        <li class="sidebar-heading">ОМБОР</li>
+        <li><a href="{% url 'medicines' %}" class="nav-link"><i class="bi bi-capsule"></i> Dori vositalari</a></li>
+        <li><a href="{% url 'reagents' %}" class="nav-link"><i class="bi bi-eyedropper"></i> Reagentlar</a></li>
+        <li><a href="{% url 'supplies' %}" class="nav-link"><i class="bi bi-bandaid"></i> Tibbiy material</a></li>
+        <li><a href="{% url 'household' %}" class="nav-link"><i class="bi bi-house-door"></i> Xo'jalik tovarlar</a></li>
+
+        <li class="sidebar-heading">ХИСОБОТЛАР</li>
+        <li><a href="{% url 'financial_report' %}" class="nav-link"><i class="bi bi-graph-up"></i> Moliyaviy hisobotlar</a></li>
+        <li><a href="{% url 'doctors_report' %}" class="nav-link"><i class="bi bi-person-lines-fill"></i> Shifokorlar hisoboti</a></li>
+
+        <li class="sidebar-heading">СОЗЛАМАЛАР</li>
+        <li><a href="{% url 'settings' %}" class="nav-link"><i class="bi bi-gear"></i> Sozlamalar</a></li>
+        <li><a href="{% url 'users' %}" class="nav-link"><i class="bi bi-people"></i> Foydalanuvchilar</a></li>
+    </ul>
+</div>
+
+<div class="main-wrapper">
+    <div class="top-navbar d-flex justify-content-end align-items-center gap-3">
+        <select class="form-select form-select-sm w-auto">
+            <option>Ўзбекча</option>
+            <option>O'zbekcha</option>
+            <option>Русский</option>
+        </select>
+        <i class="bi bi-bell text-secondary fs-6"></i>
+        <i class="bi bi-brightness-high text-secondary fs-6"></i>
+        <span class="fw-semibold text-dark"><i class="bi bi-person-circle"></i> Admin Admin</span>
+    </div>
+
+    <div class="content-body">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div class="footer d-flex justify-content-between align-items-center">
+        <div>
+            Murojaat uchun: <i class="bi bi-telephone"></i> +998982770097 | <i class="bi bi-telegram"></i> @nurmukhammad_097
+        </div>
+        <div>
+            V1.6.1 <i class="bi bi-info-circle text-primary"></i> <i class="bi bi-telephone-fill text-success"></i>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Chek № {{ appointment.receipt_no }}</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; width: 280px; margin: 0 auto; padding: 10px; font-size: 13px; }
+        .text-center { text-align: center; }
+        .line { border-bottom: 1px dashed #000; margin: 8px 0; }
+        .title { font-size: 16px; font-weight: bold; }
+        .queue { font-size: 28px; font-weight: bold; margin: 10px 0; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body onload="window.print()">
+    <div class="no-print" style="margin-bottom: 15px;">
+        <button onclick="window.print()" style="padding: 8px 15px; background: #0d6efd; color: white; border: none; cursor: pointer;">Chop etish</button>
+        <button onclick="window.close()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; cursor: pointer;">Yopish</button>
+    </div>
+
+    <div class="text-center">
+        <div class="title">OSIYO MEDICAL</div>
+        <div>Ambulator Klinika</div>
+        <div>Tel: +998 (91) 205-10-90</div>
+    </div>
+    <div class="line"></div>
+    <div><strong>Chek №:</strong> {{ appointment.receipt_no }}</div>
+    <div><strong>Sana:</strong> {{ appointment.created_at|date:"d.m.Y H:i" }}</div>
+    <div><strong>Bemor:</strong> {{ appointment.patient.full_name }}</div>
+    <div><strong>Tel:</strong> {{ appointment.patient.phone }}</div>
+    <div class="line"></div>
+    <div><strong>Shifokor:</strong> {{ appointment.doctor.full_name }}</div>
+    <div><strong>Xizmat:</strong> {{ appointment.doctor.specialty }}</div>
+    <div class="text-center queue">NAVBAT: {{ appointment.queue_number }}</div>
+    <div class="line"></div>
+    <div style="display: flex; justify-content: space-between;">
+        <span><strong>Jami to'lov:</strong></span>
+        <span><strong>{{ appointment.total_amount }} so'm</strong></span>
+    </div>
+    <div class="line"></div>
+    <div class="text-center" style="margin-top: 15px;"><small>Sog'ligingiz asrayotganingiz uchun tashakkur!</small></div>
+</body>
+</html>

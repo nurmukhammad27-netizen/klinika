@@ -1,0 +1,84 @@
+{% extends 'clinic/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">Shifokorlar</h4>
+    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
+        <i class="bi bi-person-plus-fill me-1"></i> Yangi shifokor qo'shish
+    </button>
+</div>
+
+<div class="row g-3">
+    {% for doc in doctors %}
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm p-3 h-100 position-relative">
+            <div class="d-flex justify-content-between align-items-start">
+                <h5 class="fw-bold text-primary mb-2">{{ doc.full_name }}</h5>
+                <a href="{% url 'delete_item' 'doctor' doc.id %}" onclick="return confirm('Haqiqatan ham bu shifokorni o\'chirmoqchimisiz?');" class="text-danger ms-2" title="O'chirish">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+            <p class="mb-1 text-muted"><i class="bi bi-person-badge me-1"></i> Mutaxassisligi: <strong>{{ doc.specialty }}</strong></p>
+            {% if doc.room_number %}
+                <p class="mb-1 text-muted"><i class="bi bi-door-closed me-1"></i> Xona №: <strong>{{ doc.room_number }}</strong></p>
+            {% endif %}
+            <p class="mb-1 text-muted"><i class="bi bi-telephone me-1"></i> Tel: {{ doc.phone|default:"Ko'rsatilmagan" }}</p>
+            <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Qabul narxi:</span>
+                <span class="text-success fw-bold">{{ doc.price_per_visit }} so'm</span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-light border text-center py-4 text-muted mb-0">
+            <i class="bi bi-person-x fs-2 d-block mb-2 text-secondary"></i>
+            Hali shifokorlar qo'shilmagan. Yuqoridagi tugma orqali yangi shifokor qo'shishingiz mumkin.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- YANGI SHIFOKOR QO'SHISH MODAL OYNASI -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDoctorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="addDoctorModalLabel">Yangi shifokor qo'shish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'doctors_list' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">F.I.O *</label>
+                        <input type="text" name="full_name" class="form-control" placeholder="Dr. Ism Familiya" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mutaxassisligi *</label>
+                        <input type="text" name="specialty" class="form-control" placeholder="Masalan: Terapevt, Kardiolog..." required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Qabul narxi (so'm) *</label>
+                            <input type="number" name="price_per_visit" class="form-control" placeholder="100000" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Xona raqami</label>
+                            <input type="text" name="room_number" class="form-control" placeholder="102">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Telefon raqami</label>
+                        <input type="text" name="phone" class="form-control" placeholder="+998901234567">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

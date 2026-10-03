@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Chek № {{ appointment.receipt_no }} - Osiyo Medical Services</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 10px;
+            font-size: 12px;
+            color: #000;
+        }
+        .text-center { text-align: center; }
+        .text-end { text-align: right; }
+        .fw-bold { font-weight: bold; }
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+        }
+        .row-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        @media print {
+            .no-print { display: none; }
+            body { padding: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body onload="window.print()">
+
+    <div class="no-print" style="margin-bottom: 15px; text-align: center;">
+        <button onclick="window.print()" style="padding: 6px 15px; cursor: pointer;">🖨️ Chop etish</button>
+        <button onclick="window.close()" style="padding: 6px 15px; cursor: pointer;">Yopish</button>
+    </div>
+
+    <div class="text-center">
+        <h3 style="margin: 0;" class="fw-bold">OSIYO MEDICAL SERVICES</h3>
+        <div>Ambulator Klinika</div>
+        <div>Tel: +998 (90) 123-45-67</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row-item">
+        <span>Chek №:</span>
+        <span class="fw-bold">{{ appointment.receipt_no }}</span>
+    </div>
+    <div class="row-item">
+        <span>Sana:</span>
+        <span>{{ appointment.created_at|date:"d.m.Y H:i" }}</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row-item">
+        <span>Bemor:</span>
+        <span class="fw-bold">{{ appointment.patient.full_name }}</span>
+    </div>
+    <div class="row-item">
+        <span>Telefon:</span>
+        <span>{{ appointment.patient.phone }}</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row-item">
+        <span>Shifokor:</span>
+        <span class="fw-bold">{{ appointment.doctor.full_name }}</span>
+    </div>
+    <div class="row-item">
+        <span>Mutaxassislik:</span>
+        <span>{{ appointment.doctor.specialty }}</span>
+    </div>
+    <div class="row-item" style="font-size: 14px; margin-top: 5px;">
+        <span>Navbat №:</span>
+        <span class="fw-bold">[{{ appointment.queue_number }}]</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row-item" style="font-size: 14px;">
+        <span class="fw-bold">JAMI TO'LOV:</span>
+        <span class="fw-bold">{{ appointment.total_amount }} so'm</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="text-center" style="margin-top: 10px;">
+        <div>Sog'lig'ingiz uchun rahmat!</div>
+        <small>Murojaatingiz uchun tashakkur.</small>
+    </div>
+
+</body>
+</html>

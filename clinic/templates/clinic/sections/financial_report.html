@@ -1,0 +1,153 @@
+{% extends 'clinic/base.html' %}
+
+{% block content %}
+<!-- YUQORI SARLAVHA VA FILTR -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h4 class="fw-bold mb-1">Moliyaviy Hisobotlar</h4>
+        <p class="text-muted small mb-0">Klinikaning umumiy kirim, chiqim va daromadlar tahlili</p>
+    </div>
+    
+    <!-- SANA BO'YICHA FILTR FORMASI -->
+    <form method="get" class="d-flex align-items-center gap-2">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text bg-white"><i class="bi bi-calendar-event"></i></span>
+            <input type="date" name="start_date" value="{{ start_date }}" class="form-control" title="Boshlanish sanasi">
+            <span class="input-group-text bg-light">-</span>
+            <input type="date" name="end_date" value="{{ end_date }}" class="form-control" title="Tugash sanasi">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm px-3">
+            <i class="bi bi-filter"></i> Saralash
+        </button>
+        <a href="{% url 'financial_report' %}" class="btn btn-outline-secondary btn-sm" title="Filtrni tozalash">
+            <i class="bi bi-arrow-counterclockwise"></i>
+        </a>
+    </form>
+</div>
+
+<!-- KASSA KARTOCKALARI (STATISTIKA) -->
+<div class="row g-3 mb-4">
+    <!-- JAMI TUSHUM -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm p-3 border-start border-4 border-success h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small d-block mb-1 fw-bold">JAMI TUSHUM (KIRIM)</span>
+                    <h3 class="fw-bold text-success mb-0">{{ total_income|default:"0" }} <small class="fs-6 text-muted">so'm</small></h3>
+                </div>
+                <div class="bg-success-subtle text-success p-3 rounded-circle">
+                    <i class="bi bi-arrow-down-left-circle fs-3"></i>
+                </div>
+            </div>
+            <div class="mt-2 pt-2 border-top d-flex justify-content-between text-muted style-sm" style="font-size: 12px;">
+                <span>Naqd: {{ cash_income|default:"0" }}</span>
+                <span>Karta: {{ card_income|default:"0" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAMI CHIQIM -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm p-3 border-start border-4 border-danger h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small d-block mb-1 fw-bold">JAMI XARAJT / CHIQIM</span>
+                    <h3 class="fw-bold text-danger mb-0">{{ total_expense|default:"0" }} <small class="fs-6 text-muted">so'm</small></h3>
+                </div>
+                <div class="bg-danger-subtle text-danger p-3 rounded-circle">
+                    <i class="bi bi-arrow-up-right-circle fs-3"></i>
+                </div>
+            </div>
+            <div class="mt-2 pt-2 border-top text-muted" style="font-size: 12px;">
+                <span>Maoshlar, kommunal va boshqa xarajatlar</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOF FOYDA -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm p-3 border-start border-4 border-primary h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small d-block mb-1 fw-bold">SOF DAROMAD / FOYDA</span>
+                    <h3 class="fw-bold text-primary mb-0">{{ net_profit|default:"0" }} <small class="fs-6 text-muted">so'm</small></h3>
+                </div>
+                <div class="bg-primary-subtle text-primary p-3 rounded-circle">
+                    <i class="bi bi-wallet2 fs-3"></i>
+                </div>
+            </div>
+            <div class="mt-2 pt-2 border-top text-muted" style="font-size: 12px;">
+                <span>Tushum va chiqimlar o'rtasidagi farq</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JADVALLAR BO'LIMI -->
+<div class="row g-3">
+    <!-- SHIFOKORLAR BO'YICHA TUSHUM -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-person-badge text-primary me-2"></i>Shifokorlar Bo'yicha Tushumlar</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 style-sm" style="font-size: 13px;">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Shifokor F.I.SH</th>
+                            <th>Bemorlar</th>
+                            <th>Jami tushum</th>
+                            <th class="text-end pe-3">Shifokor ulushi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in doctor_reports %}
+                        <tr>
+                            <td class="ps-3 fw-bold">{{ item.doctor.full_name }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ item.patient_count }} ta</span></td>
+                            <td class="text-success fw-bold">{{ item.total_amount }} so'm</td>
+                            <td class="text-end pe-3 fw-bold text-primary">{{ item.doctor_share }} so'm</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                Ushbu davrda shifokorlar tushumi mavjud emas.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- OXIRGI KASSA AMALLARI -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-2"></i>So'nggi Kassa Tranzaksiyalari</h6>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush" style="font-size: 13px;">
+                    {% for transaction in recent_transactions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                        <div>
+                            <div class="fw-bold">{{ transaction.title }}</div>
+                            <small class="text-muted">{{ transaction.created_at|date:"d.m.Y H:i" }} | {{ transaction.get_payment_type_display }}</small>
+                        </div>
+                        <span class="fw-bold {% if transaction.type == 'in' %}text-success{% else %}text-danger{% endif %}">
+                            {% if transaction.type == 'in' %}+{% else %}-{% endif %}{{ transaction.amount }} so'm
+                        </span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center py-4 text-muted">
+                        Aylanmalar kiritilmagan
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

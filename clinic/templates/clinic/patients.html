@@ -1,0 +1,148 @@
+{% extends 'clinic/base.html' %}
+
+{% block content %}
+<!-- Yuqori sarlavha va qidiruv paneli -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">Bemorlar va Qabullar</h4>
+    <form method="get" action="{% url 'patients_list' %}" class="d-flex gap-2 w-50">
+        <input type="text" name="q" class="form-control form-control-sm" placeholder="Qidiruv: Ism, telefon yoki chek №" value="{{ search_query }}">
+        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-search"></i> Qidirish</button>
+        {% if search_query %}
+            <a href="{% url 'patients_list' %}" class="btn btn-outline-secondary btn-sm">Tozalash</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Tablar tugmalari -->
+<div class="bg-white p-2 rounded border mb-3">
+    <div class="nav nav-pills nav-fill gap-1">
+        <button class="nav-link active btn-sm py-1">Bugungi bemorlar</button>
+        <a href="{% url 'rooms_list' %}" class="nav-link btn-sm py-1 text-primary bg-light">Xonalar</a>
+        <button class="nav-link btn-sm py-1 text-primary bg-light">Qabulga yozilganlar</button>
+        <button class="nav-link btn-sm py-1 text-primary bg-light">Qarzdorlar</button>
+        <button class="nav-link btn-sm py-1 text-primary bg-light">Tarix</button>
+    </div>
+</div>
+
+<!-- Harakatlar tugmalari va status -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addPatientModal">
+            <i class="bi bi-plus-lg"></i> Yangi bemor va qabul
+        </button>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="text-success fw-bold" style="font-size: 11px;">● Tizim faol</span>
+    </div>
+</div>
+
+<!-- Jadvallar qismi -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
+                <thead class="table-light">
+                    <tr>
+                        <th>Chek №</th>
+                        <th>F.I.O</th>
+                        <th>Telefon</th>
+                        <th>To'lov</th>
+                        <th>Shifokor</th>
+                        <th>Navbat</th>
+                        <th>Holat</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in appointments %}
+                    <tr>
+                        <td><strong>{{ app.receipt_no }}</strong></td>
+                        <td>{{ app.patient.full_name }}</td>
+                        <td>{{ app.patient.phone }}</td>
+                        <td><strong>{{ app.total_amount }} so'm</strong></td>
+                        <td>{{ app.doctor.full_name }} ({{ app.doctor.specialty }})</td>
+                        <td><span class="badge bg-primary fs-6">{{ app.queue_number }}</span></td>
+                        <td>
+                            {% if app.status == 'waiting' %}
+                                <span class="badge bg-warning text-dark">Kutmoqda</span>
+                            {% elif app.status == 'in_doctor' %}
+                                <span class="badge bg-info text-dark">Qabulda</span>
+                            {% elif app.status == 'completed' %}
+                                <span class="badge bg-success">Tugatildi</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ app.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'print_receipt' app.id %}" target="_blank" class="btn btn-sm btn-outline-primary py-0" title="Chekni chop etish">
+                                <i class="bi bi-printer"></i> Chek
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">Ma'lumot topilmadi</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-2">
+        <div class="fw-bold text-primary">
+            Jami ko'rsatilgan qabullar soni: {{ appointments.count }} ta
+        </div>
+    </div>
+</div>
+
+<!-- YANGI BEMOR QO'SHISH MODAL OYNASI -->
+<div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="addPatientModalLabel">Yangi bemor va qabul kiritish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'patients_list' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">F.I.O *</label>
+                        <input type="text" name="full_name" class="form-control" placeholder="Ism Familiya va Otasining ismi" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Telefon raqami *</label>
+                        <input type="text" name="phone" class="form-control" placeholder="+998901234567" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tug'ilgan sanasi</label>
+                            <input type="date" name="birth_date" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Jinsi</label>
+                            <select name="gender" class="form-select">
+                                <option value="M">Erkak</option>
+                                <option value="F">Ayol</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Shifokorga biriktirish *</label>
+                        <select name="doctor_id" class="form-select" required>
+                            <option value="" disabled selected>Shifokorni tanlang...</option>
+                            {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}">{{ doctor.full_name }} ({{ doctor.specialty }}) — {{ doctor.price_per_visit }} so'm</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Saqlash va Chek chiqarish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
